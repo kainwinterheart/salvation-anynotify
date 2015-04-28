@@ -22,6 +22,7 @@ WriteMakefile (
         'Plack' => 0,
         'JSON' => 0,
         'bignum' => 0,
+        'LWP::Simple' => 0,
     },
     META_MERGE => {
     "meta-spec" => { version => 2 },
