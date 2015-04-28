@@ -11,7 +11,7 @@ use Salvation::Method::Signatures;
 method start() {
 
     my $core = $self -> core();
-    my $monitor = $core -> config( 'monitor' );
+    my $monitor = $core -> config() -> get( 'monitor' );
 
     Salvation::TC -> assert( $monitor, 'HashRef[ArrayRef[HashRef|ArrayRef]]' );
 

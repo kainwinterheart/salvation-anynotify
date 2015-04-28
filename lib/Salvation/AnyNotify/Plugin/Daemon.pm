@@ -26,12 +26,13 @@ method run() {
     my $core = $self -> core();
     my $daemondecl_meta = $core -> daemondecl_meta();
 
-    Salvation::DaemonDecl::Backend -> worker( $daemondecl_meta, {
+    Salvation::DaemonDecl::Backend -> add_worker( $daemondecl_meta, {
         name 'main',
         max_instances 1,
         log {
             warn @_;
         },
+        ro,
         main {
             my ( $worker ) = @_;
 

@@ -3,6 +3,13 @@
 use strict;
 use warnings;
 
+BEGIN {
+
+    require Carp;
+
+    $SIG{ __DIE__ } = \&Carp::confess;
+};
+
 use Salvation::AnyNotify ();
 
 Salvation::AnyNotify

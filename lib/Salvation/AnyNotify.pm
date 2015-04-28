@@ -18,15 +18,16 @@ our $AUTOLOAD;
 sub AUTOLOAD {
 
     my ( $self, @args ) = @_;
+    my $autoload = $AUTOLOAD;
 
-    return $self -> { $AUTOLOAD } if exists $self -> { $AUTOLOAD };
+    return $self -> { $autoload } if exists $self -> { $autoload };
 
-    my $plugin = camelize( ( $AUTOLOAD =~ m/^.*::(.+?)$/ )[ 0 ] );
+    my $plugin = camelize( ( $autoload =~ m/^.*::(.+?)$/ )[ 0 ] );
     my $object = $self -> load_plugin( infix => 'Plugin', base_name => $plugin );
 
     die( "Failed to load plugin: ${plugin}" ) unless defined $object;
 
-    return $self -> { $AUTOLOAD } = $object;
+    return $self -> { $autoload } = $object;
 }
 
 method load_plugin( Str{1,} :infix!, Str{1,} :base_name! ) {

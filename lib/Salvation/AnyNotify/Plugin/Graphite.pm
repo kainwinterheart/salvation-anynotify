@@ -9,6 +9,7 @@ use URI ();
 use Socket 'AF_INET', 'AF_INET6';
 use AnyEvent ();
 use Salvation::TC ();
+use String::CamelCase 'camelize';
 use Net::Graphite::Reader ();
 use Salvation::Method::Signatures;
 
@@ -20,6 +21,8 @@ method start() {
 }
 
 method monitor( Str{1,} :plugin!, ArrayRef|HashRef :spec!, Int :interval!, Int :after ) {
+
+    $plugin = camelize( $plugin );
 
     unless( exists $self -> { "monitor:${plugin}" } ) {
 
@@ -34,13 +37,13 @@ method monitor( Str{1,} :plugin!, ArrayRef|HashRef :spec!, Int :interval!, Int :
 
     my @args = ();
 
-    if( ref( $node ) eq 'HASH' ) {
+    if( ref( $spec ) eq 'HASH' ) {
 
-        @args = %$node;
+        @args = %$spec;
 
     } else {
 
-        @args = @$node;
+        @args = @$spec;
     }
 
     my $watcher = $self -> { "monitor:${plugin}" } -> add( @args );
@@ -114,11 +117,15 @@ method get_graphite() {
         my $scheme = $uri -> scheme();
 
         if(
-            ( ( $scheme eq 'http' ) && ( $port == 80 ) )
-            || ( ( $scheme eq 'https' ) && ( $port == 443 ) )
+            ( ( $scheme eq 'http' ) && ( $spec -> { 'port' } == 80 ) )
+            || ( ( $scheme eq 'https' ) && ( $spec -> { 'port' } == 443 ) )
         ) {
 
             $uri -> port( undef );
+
+        } else {
+
+            $uri -> port( $spec -> { 'port' } );
         }
 
         foreach my $ai ( Socket::getaddrinfo( $uri -> host(), $uri -> port() ) ) {
@@ -127,7 +134,7 @@ method get_graphite() {
 
             if(
                 ( $ai -> { 'family' } == AF_INET )
-                && ( $ai -> { 'family' } == AF_INET6 )
+                || ( $ai -> { 'family' } == AF_INET6 )
             ) {
 
                 return Net::Graphite::Reader -> new(

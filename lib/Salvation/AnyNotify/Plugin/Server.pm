@@ -6,6 +6,7 @@ use warnings;
 use base 'Salvation::AnyNotify::Plugin';
 
 use AnyEvent ();
+use Scalar::Util 'weaken';
 use Salvation::TC ();
 use Plack::Request ();
 use Sub::Recursive 'recursive', '$REC';
@@ -26,7 +27,7 @@ method serve_request(
     HashRef channels
 ) {
 
-    my $channel = ( $channels -> { $request -> parameters() -> get( 'channel' ) } // {} );
+    my $channel = ( $channels -> { $request -> parameters() -> get( 'channel' ) // '' } // {} );
     my $now = time();
     my $ttl = $channel -> { 'ttl' };
     my $body = '';
@@ -43,6 +44,8 @@ method serve_request(
         $body .= pack( 'N', length( $node -> { 'data' } ) );
         $body .= $node -> { 'data' };
     }
+
+    unshift( @{ $channel -> { 'queue' } }, @new_queue );
 
     $response -> content_type( 'text/plain' );
     $response -> body( $body );
@@ -68,12 +71,13 @@ method start() {
 
     my $daemondecl_meta = $core -> daemondecl_meta();
 
-    Salvation::DaemonDecl::Backend -> worker( $daemondecl_meta, {
+    Salvation::DaemonDecl::Backend -> add_worker( $daemondecl_meta, {
         name 'http server',
         max_instances 1,
         log {
             warn @_;
         },
+        ro,
         main {
             my ( $worker ) = @_;
             my $server = Twiggy::Server -> new( host => $host, port => $port );

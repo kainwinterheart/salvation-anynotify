@@ -6,7 +6,7 @@ use bignum;
 
 use base 'Salvation::AnyNotify::Plugin::Graphite::Monitor';
 
-use JSON 'encode_json';
+use JSON ();
 use Salvation::Method::Signatures;
 
 use constant {
@@ -22,7 +22,7 @@ method add( Str{1,} :target!, Int :threshold, Str{1,} :from, Str{1,} :to, Int :m
     my $core = $self -> core();
     my %data = ();
 
-    $from //= '-10min'
+    $from //= '-10min';
     $to //= 'now';
     $memory //= $self -> default_memory_limit();
 
@@ -41,7 +41,8 @@ method add( Str{1,} :target!, Int :threshold, Str{1,} :from, Str{1,} :to, Int :m
 
             foreach my $metric ( $result -> all_metrics() ) {
 
-                my $storage = $data{ $metric -> target() } //= {
+                my $target = $metric -> target();
+                my $storage = $data{ $target } //= {
                     sum => 0,
                     cnt => 0,
                     avg => 0,
@@ -67,13 +68,17 @@ method add( Str{1,} :target!, Int :threshold, Str{1,} :from, Str{1,} :to, Int :m
                         stat => { map( { $_ => $storage -> { $_ } } (
                             'avg', 'stddev', 'skew',
                         ) ) },
+                        target => $target,
                     } );
                 };
 
-                foreach my $point ( sort( { $a -> [ POINT_IDX_TIME ] <=> $b -> [ POINT_IDX_TIME ] }
-                    @{ $metric -> datapoints() } ) ) {
+                foreach my $point ( sort( {
+                        ( $a -> [ POINT_IDX_TIME ] // 0 )
+                        <=> ( $b -> [ POINT_IDX_TIME ] // 0 ) } @{ $metric -> datapoints() } ) ) {
 
                     my $value = $point -> [ POINT_IDX_VALUE ];
+
+                    next unless defined $value;
 
                     ++ $storage -> { 'cnt' };
                     $storage -> { 'sum' } += $value;
@@ -165,10 +170,15 @@ method add( Str{1,} :target!, Int :threshold, Str{1,} :from, Str{1,} :to, Int :m
             if( scalar( @warnings ) > 0 ) {
 
                 my $bus = $core -> bus();
+                my $json = JSON
+                    -> new()
+                    -> allow_blessed()
+                    -> allow_bignum()
+                ;
 
                 foreach my $warning ( @warnings ) {
 
-                    $bus -> notify( $warning -> { 'type' }, encode_json( $warning ) );
+                    $bus -> notify( $warning -> { 'type' }, $json -> encode( $warning ) );
                 }
             }
         }
