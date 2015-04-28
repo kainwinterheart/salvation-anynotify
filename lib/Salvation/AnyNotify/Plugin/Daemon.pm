@@ -23,8 +23,7 @@ method enqueue( CodeRef|Str code ) {
 
 method run() {
 
-    my $core = $self -> core();
-    my $daemondecl_meta = $core -> daemondecl_meta();
+    my $daemondecl_meta = $self -> core() -> daemondecl_meta();
 
     Salvation::DaemonDecl::Backend -> add_worker( $daemondecl_meta, {
         name 'main',
@@ -35,13 +34,16 @@ method run() {
         ro,
         main {
             my ( $worker ) = @_;
+            my $core = $self -> core();
 
             while( defined( my $code = shift( @{ $self -> { 'queue' } } ) ) ) {
 
-                $core -> $code();
+                eval{ $core -> $code() };
+
+                warn $@ if $@;
             }
 
-            Salvation::DaemonDecl::Backend -> wait_all_workers( $daemondecl_meta );
+            Salvation::DaemonDecl::Backend -> wait_all_workers( $core -> daemondecl_meta() );
         },
     } );
 
