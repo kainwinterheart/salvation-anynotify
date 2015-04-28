@@ -1,0 +1,15 @@
+bin/anynotify-monitor
+lib/Salvation/AnyNotify.pm
+lib/Salvation/AnyNotify/Object.pm
+lib/Salvation/AnyNotify/Plugin.pm
+lib/Salvation/AnyNotify/Plugin/Bus.pm
+lib/Salvation/AnyNotify/Plugin/Config.pm
+lib/Salvation/AnyNotify/Plugin/Daemon.pm
+lib/Salvation/AnyNotify/Plugin/Graphite.pm
+lib/Salvation/AnyNotify/Plugin/Graphite/Monitor.pm
+lib/Salvation/AnyNotify/Plugin/Graphite/Monitor/Discontinuity.pm
+lib/Salvation/AnyNotify/Plugin/Monitor.pm
+lib/Salvation/AnyNotify/Plugin/Server.pm
+Makefile.PL
+MANIFEST			This list of files
+Salvation-AnyNotify-0.01.tar.gz
