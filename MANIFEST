@@ -1,4 +1,5 @@
 bin/anynotify-monitor
+bin/anynotify-monitor-read
 lib/Salvation/AnyNotify.pm
 lib/Salvation/AnyNotify/Object.pm
 lib/Salvation/AnyNotify/Plugin.pm
