@@ -6,22 +6,13 @@ use warnings;
 use base 'Salvation::AnyNotify::Plugin';
 
 use Salvation::Method::Signatures;
-use Salvation::DaemonDecl::Backend ();
 
 method notify( Str{1,} channel, Str{1,} data ) {
 
     my $core = $self -> core();
+    my $bus = $core -> config() -> get( 'bus' );
 
-    Salvation::DaemonDecl::Backend -> write_to(
-        $core -> daemondecl_meta(),
-        $core -> server() -> pid(),
-        pack( 'N', length( $channel ) )
-        . $channel
-        . pack( 'N', length( $data ) )
-        . $data
-    );
-
-    return;
+    return $core -> $bus() -> bus_notify( $channel, $data );
 }
 
 1;
