@@ -6,7 +6,6 @@ use warnings;
 use base 'Salvation::PluginCore';
 
 use Salvation::Method::Signatures;
-use Salvation::DaemonDecl::Backend ();
 
 our $VERSION = 0.01;
 our $AUTOLOAD;
@@ -24,11 +23,6 @@ sub AUTOLOAD {
     die( "Failed to load plugin: ${plugin}" ) unless defined $object;
 
     return $self -> { $autoload } = $object;
-}
-
-method daemondecl_meta() {
-
-    return Salvation::DaemonDecl::Backend -> get_meta( ref( $self ) || $self );
 }
 
 1;
