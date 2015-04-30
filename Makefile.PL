@@ -9,7 +9,7 @@ WriteMakefile (
     PREREQ_PM => {
         'Salvation::TC' => '0.11',
         'Salvation::Method::Signatures' => '0.02',
-        'Salvation::PluginCore' => '0.1',
+        'Salvation::PluginCore' => '0.01',
         'YAML' => 0,
         'File::Slurp' => 0,
         'File::HomeDir' => 0,
