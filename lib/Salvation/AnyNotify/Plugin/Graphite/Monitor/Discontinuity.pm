@@ -17,7 +17,10 @@ use constant {
 
 sub default_memory_limit { 100 }
 
-method add( Str{1,} :target!, Int :threshold, Str{1,} :from, Str{1,} :to, Int :memory ) {
+method add(
+    Str{1,}|ArrayRef[Str{1,}]{1,} :target!, Int :threshold,
+    Str{1,} :from, Str{1,} :to, Int :memory
+) {
 
     my $core = $self -> core();
     my %data = ();

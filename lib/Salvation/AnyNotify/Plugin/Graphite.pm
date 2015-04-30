@@ -56,7 +56,7 @@ method monitor( Str{1,} :plugin!, ArrayRef|HashRef :spec!, Int :interval!, Int :
     return;
 }
 
-method query( Str{1,} :target!, Str{1,} :from!, Str{1,} :to! ) {
+method query( Str{1,}|ArrayRef[Str{1,}]{1,} :target!, Str{1,} :from!, Str{1,} :to! ) {
 
     my $now = time();
     my $instances = $self -> { 'instances' } //= {};
