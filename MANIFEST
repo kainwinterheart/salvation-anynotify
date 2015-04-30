@@ -1,7 +1,6 @@
 bin/anynotify-monitor
 bin/anynotify-monitor-read
 lib/Salvation/AnyNotify.pm
-lib/Salvation/AnyNotify/Object.pm
 lib/Salvation/AnyNotify/Plugin.pm
 lib/Salvation/AnyNotify/Plugin/Bus.pm
 lib/Salvation/AnyNotify/Plugin/Config.pm
@@ -13,4 +12,3 @@ lib/Salvation/AnyNotify/Plugin/Monitor.pm
 lib/Salvation/AnyNotify/Plugin/Server.pm
 Makefile.PL
 MANIFEST			This list of files
-Salvation-AnyNotify-0.01.tar.gz

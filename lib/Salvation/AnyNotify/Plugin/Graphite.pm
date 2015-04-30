@@ -9,7 +9,6 @@ use URI ();
 use Socket 'AF_INET', 'AF_INET6';
 use AnyEvent ();
 use Salvation::TC ();
-use String::CamelCase 'camelize';
 use Net::Graphite::Reader ();
 use Salvation::Method::Signatures;
 
@@ -22,12 +21,10 @@ method start() {
 
 method monitor( Str{1,} :plugin!, ArrayRef|HashRef :spec!, Int :interval!, Int :after ) {
 
-    $plugin = camelize( $plugin );
-
     unless( exists $self -> { "monitor:${plugin}" } ) {
 
-        my $object = $self -> core() -> load_plugin(
-            infix => 'Plugin::Graphite::Monitor', base_name => $plugin,
+        my $object = $self -> load_plugin(
+            infix => 'Monitor', base_name => $plugin,
         );
 
         die( "Graphite has no monitoring available for ${plugin}" ) unless defined $object;

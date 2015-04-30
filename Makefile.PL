@@ -10,6 +10,7 @@ WriteMakefile (
         'Salvation::TC' => '0.11',
         'Salvation::Method::Signatures' => '0.02',
         'Salvation::DaemonDecl' => 0,
+        'Salvation::PluginCore' => '0.1',
         'AnyEvent' => 0,
         'String::CamelCase' => 0,
         'YAML' => 0,
